@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
-html,body{
+html, body {
 margin:0;
 padding:0;
 height:100%;
@@ -17,14 +17,31 @@ font-family:'Segoe UI',sans-serif;
 color:white;
 background:linear-gradient(135deg,#9d7bff,#b28dff,#c8b6ff,#a084e8);
 background-size:200% 200%;
-animation:lavenderMove 12s infinite alternate;
+animation:lavenderMove 14s ease infinite;
 }
 
 @keyframes lavenderMove{
 0%{background-position:0% 50%;}
-100%{background-position:100% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
+/* Tap overlay */
+#startOverlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Great Vibes',cursive;
+font-size:45px;
+cursor:pointer;
+z-index:9999;
+background:inherit;
+}
+
+/* Pages */
 .page{
 position:absolute;
 width:100%;
@@ -33,7 +50,9 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-transition:opacity 1s;
+text-align:center;
+transition:opacity 1s ease;
+z-index:2;
 }
 
 .hidden{opacity:0;pointer-events:none;}
@@ -41,13 +60,13 @@ transition:opacity 1s;
 
 .timer{
 font-size:42px;
-background:rgba(255,255,255,0.6);
-color:#4b0082;
-padding:15px 30px;
-border-radius:25px;
 margin:20px;
-min-width:260px;
-text-align:center;
+font-weight:bold;
+color:#4b0082;
+background:rgba(255,255,255,0.6);
+padding:15px 35px;
+border-radius:25px;
+min-width:240px;
 }
 
 button{
@@ -61,21 +80,66 @@ cursor:pointer;
 margin:10px;
 }
 
+/* Heart Balloons */
+.balloon{
+position:fixed;
+bottom:-60px;
+font-size:26px;
+opacity:0.8;
+animation:floatUp linear infinite;
+pointer-events:none;
+z-index:1;
+}
+
+.glow{
+animation:glowPulse 2s infinite alternate;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0);}
+100%{transform:translateY(-120vh);}
+}
+
+@keyframes glowPulse{
+from{text-shadow:0 0 5px #fff;}
+to{text-shadow:0 0 20px #ffffff;}
+}
+
+/* Popup background */
+#popupBg{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+filter:blur(20px) brightness(0.5);
+z-index:-1;
+transition:background-image 1s ease;
+}
+
+/* Fireworks */
 #fireworksCanvas{
 position:fixed;
-top:0;left:0;
-width:100%;height:100%;
+top:0;
+left:0;
+width:100%;
+height:100%;
 pointer-events:none;
+z-index:5;
 }
 </style>
 </head>
 
 <body>
 
+<div id="startOverlay">Tap to Begin 💜</div>
+
 <!-- PAGE 1 -->
 <div id="page1" class="page visible">
-<h1 style="font-family:'Great Vibes',cursive;font-size:55px;">Hey Turtle 🐢</h1>
-<p>Countdown to your special day 💜</p>
+<h1 style="font-family:'Great Vibes',cursive;font-size:60px;">Hey Turtle 🐢</h1>
+<p style="font-size:22px;">Countdown to your special day 💜</p>
 <div class="timer" id="timer">00:00:00</div>
 <button id="nextBtn" onclick="showPage2()" style="display:none;">Next ➜</button>
 </div>
@@ -100,8 +164,9 @@ Pick-up at 12 sharp 😌
 </div>
 
 <!-- POPUP -->
-<div id="popup" class="page hidden" style="background:rgba(0,0,0,0.6);z-index:5;">
-<div style="background:white;color:#7b2cbf;padding:30px;border-radius:20px;max-width:420px;font-family:'Great Vibes',cursive;font-size:22px;text-align:center;">
+<div id="popup" class="page hidden" style="background:rgba(0,0,0,0.6);z-index:10;">
+<div id="popupBg"></div>
+<div style="background:white;color:#7b2cbf;padding:35px;border-radius:20px;max-width:450px;font-family:'Great Vibes',cursive;font-size:22px;">
 <h2>For You 💜</h2>
 <p>
 Meeting you has been one of the best things
@@ -121,14 +186,40 @@ And I love you.
 </div>
 
 <canvas id="fireworksCanvas"></canvas>
+<audio id="bgMusic" src="instrumental.mp3" loop></audio>
 
 <script>
 
 let unlocked=false;
+
+/* MUSIC */
+const music=document.getElementById("bgMusic");
+music.volume=0.6;
+
+document.getElementById("startOverlay").addEventListener("click",function(){
+music.play();
+this.style.display="none";
+});
+
+/* HEART BALLOONS WITH OCCASIONAL GLOW */
+for(let i=0;i<25;i++){
+let b=document.createElement("div");
+b.className="balloon";
+b.innerHTML="💜";
+b.style.left=Math.random()*100+"vw";
+b.style.animationDuration=(8+Math.random()*6)+"s";
+
+if(Math.random() > 0.7){
+b.classList.add("glow");
+}
+
+document.body.appendChild(b);
+}
+
+/* COUNTDOWN */
+const birthday=new Date("March 2, 2026 16:33:00 GMT+0530").getTime();
 const timer=document.getElementById("timer");
 const nextBtn=document.getElementById("nextBtn");
-
-const birthday=new Date("March 2, 2026 18:23:00 GMT+0530").getTime();
 
 const interval=setInterval(()=>{
 if(unlocked) return;
@@ -156,11 +247,11 @@ String(seconds).padStart(2,'0');
 
 },1000);
 
-/* FIREWORKS CONTINUOUS */
+/* FIREWORKS */
 const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
 let particles=[];
 
@@ -197,6 +288,39 @@ particles=particles.filter(p=>p.alpha>0);
 requestAnimationFrame(animate);
 }
 
+/* IMAGES */
+const images=[
+"photo1.jpg",
+"photo2.jpg",
+"photo3.jpg",
+"photo4.JPG",
+"photo5.JPG",
+"photo6.JPG",
+"photo7.jpg",
+"photo8.jpg",
+"photo9.JPG",
+"photo10.JPG"
+];
+
+let popupIndex=0;
+let popupInterval;
+
+/* POPUP SLIDESHOW */
+function startPopupSlideshow(){
+const bg=document.getElementById("popupBg");
+bg.style.backgroundImage="url('"+images[0]+"')";
+
+popupInterval=setInterval(()=>{
+popupIndex=(popupIndex+1)%images.length;
+bg.style.backgroundImage="url('"+images[popupIndex]+"')";
+},3000);
+}
+
+function stopPopupSlideshow(){
+clearInterval(popupInterval);
+popupIndex=0;
+}
+
 /* NAVIGATION */
 function showPage2(){
 document.getElementById("page1").classList.add("hidden");
@@ -215,15 +339,17 @@ document.getElementById("page2").classList.remove("hidden");
 
 function openPopup(){
 document.getElementById("popup").classList.remove("hidden");
+startPopupSlideshow();
 }
 
 function closePopup(){
+stopPopupSlideshow();
 document.getElementById("popup").classList.add("hidden");
 document.getElementById("page2").classList.add("hidden");
 document.getElementById("page3").classList.remove("hidden");
 }
 
-/* NO button move */
+/* NO BUTTON JUMP */
 document.getElementById("noBtn").addEventListener("mouseover",function(){
 this.style.position="absolute";
 this.style.left=Math.random()*80+"vw";
@@ -231,5 +357,6 @@ this.style.top=Math.random()*80+"vh";
 });
 
 </script>
+
 </body>
 </html>
