@@ -51,12 +51,15 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 text-align:center;
-transition:opacity 1s ease;
-z-index:2;
 }
 
-.hidden{opacity:0;pointer-events:none;}
-.visible{opacity:1;}
+.hidden{
+display:none;
+}
+
+.visible{
+display:flex;
+}
 
 .timer{
 font-size:42px;
@@ -201,7 +204,7 @@ music.play();
 this.style.display="none";
 });
 
-/* HEART BALLOONS WITH OCCASIONAL GLOW */
+/* HEART BALLOONS */
 for(let i=0;i<25;i++){
 let b=document.createElement("div");
 b.className="balloon";
@@ -209,7 +212,7 @@ b.innerHTML="💜";
 b.style.left=Math.random()*100+"vw";
 b.style.animationDuration=(8+Math.random()*6)+"s";
 
-if(Math.random() > 0.7){
+if(Math.random()>0.7){
 b.classList.add("glow");
 }
 
@@ -217,7 +220,7 @@ document.body.appendChild(b);
 }
 
 /* COUNTDOWN */
-const birthday=new Date("March 2, 2026 16:33:00 GMT+0530").getTime();
+const birthday=new Date("March 3, 2026 18:41:30 GMT+0530").getTime();
 const timer=document.getElementById("timer");
 const nextBtn=document.getElementById("nextBtn");
 
@@ -323,33 +326,33 @@ popupIndex=0;
 
 /* NAVIGATION */
 function showPage2(){
-document.getElementById("page1").classList.add("hidden");
-document.getElementById("page2").classList.remove("hidden");
+document.getElementById("page1").className="page hidden";
+document.getElementById("page2").className="page visible";
 }
 
 function goBack(){
-document.getElementById("page2").classList.add("hidden");
-document.getElementById("page1").classList.remove("hidden");
+document.getElementById("page2").className="page hidden";
+document.getElementById("page1").className="page visible";
 }
 
 function goBackTo2(){
-document.getElementById("page3").classList.add("hidden");
-document.getElementById("page2").classList.remove("hidden");
+document.getElementById("page3").className="page hidden";
+document.getElementById("page2").className="page visible";
 }
 
 function openPopup(){
-document.getElementById("popup").classList.remove("hidden");
+document.getElementById("popup").className="page visible";
 startPopupSlideshow();
 }
 
 function closePopup(){
 stopPopupSlideshow();
-document.getElementById("popup").classList.add("hidden");
-document.getElementById("page2").classList.add("hidden");
-document.getElementById("page3").classList.remove("hidden");
+document.getElementById("popup").className="page hidden";
+document.getElementById("page2").className="page hidden";
+document.getElementById("page3").className="page visible";
 }
 
-/* NO BUTTON JUMP */
+/* NO BUTTON MOVE */
 document.getElementById("noBtn").addEventListener("mouseover",function(){
 this.style.position="absolute";
 this.style.left=Math.random()*80+"vw";
