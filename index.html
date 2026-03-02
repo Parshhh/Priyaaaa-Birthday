@@ -15,14 +15,7 @@ height:100%;
 overflow:hidden;
 font-family:'Segoe UI',sans-serif;
 color:white;
-
-background:linear-gradient(
-135deg,
-#9d7bff 0%,
-#b28dff 30%,
-#c8b6ff 60%,
-#a084e8 100%
-);
+background:linear-gradient(135deg,#9d7bff 0%,#b28dff 30%,#c8b6ff 60%,#a084e8 100%);
 background-size:200% 200%;
 animation:lavenderMove 14s ease infinite;
 }
@@ -33,6 +26,7 @@ animation:lavenderMove 14s ease infinite;
 100%{background-position:0% 50%;}
 }
 
+/* Overlay */
 #startOverlay{
 position:fixed;
 top:0;left:0;
@@ -47,6 +41,7 @@ z-index:9999;
 background:inherit;
 }
 
+/* Pages */
 .page{
 position:absolute;
 width:100%;
@@ -70,34 +65,27 @@ color:#4b0082;
 background:rgba(255,255,255,0.6);
 padding:12px 25px;
 border-radius:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-backdrop-filter:blur(8px);
 }
 
-.slideshow img{
-max-width:85%;
-max-height:60vh;
-border-radius:20px;
-box-shadow:0 15px 35px rgba(0,0,0,0.4);
+/* Heart Balloons */
+.balloon{
+position:fixed;
+bottom:-100px;
+font-size:35px;
+animation:floatBalloon linear infinite;
+z-index:0;
 }
 
-button{
-padding:10px 20px;
-border:none;
-border-radius:25px;
-cursor:pointer;
-margin:10px;
-background:white;
-color:#7b2cbf;
-font-weight:bold;
+@keyframes floatBalloon{
+0%{transform:translateY(0);}
+100%{transform:translateY(-120vh);}
 }
 
+/* Page 2 background */
 #bgSlideshow{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 background-size:cover;
 background-position:center;
 filter:blur(18px) brightness(0.6);
@@ -120,6 +108,18 @@ opacity:0;
 100%{opacity:1; transform:translateY(0);}
 }
 
+button{
+padding:10px 20px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+margin:10px;
+background:white;
+color:#7b2cbf;
+font-weight:bold;
+}
+
+/* Invitation */
 .inviteCard{
 background:white;
 color:#7b2cbf;
@@ -130,40 +130,67 @@ font-family:'Great Vibes',cursive;
 font-size:24px;
 }
 
-/* Balloons */
-.balloon{
+/* Popup with photo background */
+.popup{
 position:fixed;
-bottom:-150px;
-width:50px;
-height:65px;
-border-radius:50%;
-opacity:0.85;
-animation:floatBalloon linear infinite;
-z-index:0;
+top:0;left:0;
+width:100%;height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:10000;
 }
 
-.balloon::after{
-content:"";
+.popupBg{
 position:absolute;
-width:2px;
-height:50px;
-background:white;
-left:50%;
-top:65px;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+filter:blur(20px) brightness(0.5);
+z-index:-1;
+transition:background-image 1.5s ease;
 }
 
-@keyframes floatBalloon{
-0%{transform:translateY(0);}
-100%{transform:translateY(-120vh);}
+.popupContent{
+background:white;
+color:#7b2cbf;
+padding:30px;
+border-radius:20px;
+max-width:400px;
+text-align:center;
+font-family:'Great Vibes',cursive;
+font-size:22px;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+animation:popupFade 0.4s ease;
+}
+
+@keyframes popupFade{
+from{transform:scale(0.8);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+/* Letter icon */
+.letter{
+position:fixed;
+bottom:20px;
+right:20px;
+font-size:35px;
+cursor:pointer;
+z-index:10;
+animation:floatLetter 2s infinite alternate;
+}
+
+@keyframes floatLetter{
+from{transform:translateY(0);}
+to{transform:translateY(-8px);}
 }
 
 /* Fireworks */
 #fireworksCanvas{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 pointer-events:none;
 z-index:5;
 }
@@ -174,58 +201,57 @@ z-index:5;
 
 <div id="startOverlay">Tap to Begin 💜</div>
 
-<!-- PAGE 1 -->
 <div id="page1" class="page visible">
 <h1 style="font-family:'Great Vibes',cursive;font-size:50px;">Hey Turtle 🐢</h1>
 <p>Countdown to your special day 💜</p>
 <div class="timer" id="timer"></div>
-<div class="slideshow">
-<img id="slideImage" src="photo1.jpg">
-</div>
-
 <button id="nextBtn" onclick="showPage2()" style="display:none;">Next ➜</button>
 </div>
 
-<!-- PAGE 2 -->
 <div id="page2" class="page hidden">
 <div id="bgSlideshow"></div>
-
-<h1 class="birthdayTitle">
-HAPPY&nbsp;&nbsp;BIRTHDAY<br>BABYYYY&nbsp;💜
-</h1>
-
+<h1 class="birthdayTitle">HAPPY&nbsp;&nbsp;BIRTHDAY<br>BABYYYY&nbsp;💜</h1>
 <p>Main apni favorite hoon…</p>
 <p>Par aaj se, tum meri forever favorite ho.</p>
-<p>Agar life ek train journey hai…</p>
-<p>toh main khush hoon ki meri Geet mujhe mil gayi.</p>
-
 <h3>Will you celebrate this birthday with me? 💜</h3>
-
-<button onclick="goToInvite()">YES 💜</button>
+<button onclick="openPopup()">YES 💜</button>
 <button id="noBtn">NO 🙈</button>
 <button onclick="goBackToPage1()">⬅ Back</button>
 </div>
 
-<!-- PAGE 3 -->
 <div id="page3" class="page hidden">
 <div class="inviteCard">
 Priya Turns 24 💜<br><br>
-You are invited to a birthday lunch date<br><br>
-Nido – Craft Kitchen & Bar<br>
-Bangalore<br><br>
-Pick-up at 12 sharp 😌<br>
-Dress pretty. Smile wide.
+Lunch Date at Nido – Craft Kitchen & Bar<br>
+Pick-up at 12 sharp 😌
 </div>
 <button onclick="goBackToPage2()">⬅ Back</button>
 </div>
+
+<div id="lovePopup" class="popup hidden">
+<div id="popupBg" class="popupBg"></div>
+<div class="popupContent">
+<h2>For You, Turtle 💜</h2>
+<p>
+You are my calm, my happiness,  
+my favorite person in every universe.  
+I promise to love you louder every year.
+</p>
+<button onclick="closePopup()">Close 💜</button>
+</div>
+</div>
+
+<div id="letterIcon" class="letter hidden" onclick="openPopup()">💌</div>
 
 <canvas id="fireworksCanvas"></canvas>
 <audio id="bgMusic" src="instrumental.mp3" loop></audio>
 
 <script>
-let birthdayUnlocked=false;
 
-/* MUSIC */
+let birthdayUnlocked=false;
+let loveNoteUnlocked=false;
+
+/* Music */
 const music=document.getElementById("bgMusic");
 music.volume=0.6;
 document.getElementById("startOverlay").addEventListener("click",function(){
@@ -233,29 +259,25 @@ music.play();
 this.style.display="none";
 });
 
-/* BALLOONS */
-const balloonColors=["#cdb4ff","#b28dff","#9d7bff","#a084e8"];
+/* Heart Balloons */
 for(let i=0;i<20;i++){
 let balloon=document.createElement("div");
 balloon.className="balloon";
+balloon.innerHTML="💜";
 balloon.style.left=Math.random()*100+"vw";
-balloon.style.background=balloonColors[Math.floor(Math.random()*balloonColors.length)];
-balloon.style.animationDuration=(10+Math.random()*8)+"s";
+balloon.style.animationDuration=(8+Math.random()*6)+"s";
 document.body.appendChild(balloon);
 }
 
 /* Countdown */
-const birthday=new Date("March 2, 2026 17:52:00 GMT+0530").getTime();
-const timerInterval=setInterval(()=>{
+const birthday=new Date("March 2, 2026 18:02:00 GMT+0530").getTime();
+setInterval(()=>{
 const now=new Date().getTime();
 const distance=birthday-now;
 
 if(distance<=0){
-clearInterval(timerInterval);
 birthdayUnlocked=true;
 document.getElementById("nextBtn").style.display="inline-block";
-showPage2();
-return;
 }
 
 const days=Math.floor(distance/(1000*60*60*24));
@@ -267,7 +289,7 @@ document.getElementById("timer").innerHTML=
 days+"d "+hours+"h "+minutes+"m "+seconds+"s";
 },1000);
 
-/* IMPORTANT: Updated with JPG */
+/* Images */
 const images=[
 "photo1.jpg",
 "photo2.jpg",
@@ -281,47 +303,42 @@ const images=[
 "photo10.JPG"
 ];
 
-let index=0;
-setInterval(()=>{
-index=(index+1)%images.length;
-document.getElementById("slideImage").src=images[index];
-},3000);
-
-let bgInterval;
-function startBackgroundSlideshow(){
-const bg=document.getElementById("bgSlideshow");
+/* Background slideshow */
 let bgIndex=0;
-bg.style.backgroundImage="url('"+images[0]+"')";
-clearInterval(bgInterval);
-bgInterval=setInterval(()=>{
+setInterval(()=>{
 bgIndex=(bgIndex+1)%images.length;
-bg.style.backgroundImage="url('"+images[bgIndex]+"')";
+document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[bgIndex]+"')";
+document.getElementById("popupBg").style.backgroundImage="url('"+images[bgIndex]+"')";
 },4000);
-}
 
 function showPage2(){
 document.getElementById("page1").classList.replace("visible","hidden");
 document.getElementById("page2").classList.replace("hidden","visible");
-startBackgroundSlideshow();
-music.volume=0.4;
-launchFireworks();
-}
-
-function goToInvite(){
-document.getElementById("page2").classList.replace("visible","hidden");
-document.getElementById("page3").classList.replace("hidden","visible");
-music.volume=0.3;
 }
 
 function goBackToPage1(){
 document.getElementById("page2").classList.replace("visible","hidden");
 document.getElementById("page1").classList.replace("hidden","visible");
-if(birthdayUnlocked){launchFireworks();}
 }
 
 function goBackToPage2(){
 document.getElementById("page3").classList.replace("visible","hidden");
 document.getElementById("page2").classList.replace("hidden","visible");
+if(loveNoteUnlocked){
+document.getElementById("letterIcon").classList.remove("hidden");
+}
+}
+
+function openPopup(){
+document.getElementById("lovePopup").classList.remove("hidden");
+}
+
+function closePopup(){
+document.getElementById("lovePopup").classList.add("hidden");
+loveNoteUnlocked=true;
+document.getElementById("letterIcon").classList.remove("hidden");
+document.getElementById("page2").classList.replace("visible","hidden");
+document.getElementById("page3").classList.replace("hidden","visible");
 }
 
 document.getElementById("noBtn").addEventListener("mouseover",function(){
@@ -330,43 +347,6 @@ this.style.left=Math.random()*80+"vw";
 this.style.top=Math.random()*80+"vh";
 });
 
-/* Fireworks */
-const canvas=document.getElementById("fireworksCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-function launchFireworks(){
-let particles=[];
-for(let i=0;i<120;i++){
-particles.push({
-x:canvas.width/2,
-y:canvas.height/2,
-angle:Math.random()*2*Math.PI,
-speed:Math.random()*6+2,
-radius:Math.random()*3+1,
-alpha:1
-});
-}
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-particles.forEach(p=>{
-p.x+=Math.cos(p.angle)*p.speed;
-p.y+=Math.sin(p.angle)*p.speed;
-p.alpha-=0.02;
-ctx.globalAlpha=p.alpha;
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-ctx.fillStyle="#ffffff";
-ctx.fill();
-});
-particles=particles.filter(p=>p.alpha>0);
-if(particles.length>0){requestAnimationFrame(animate);}
-}
-animate();
-}
 </script>
-
 </body>
 </html>
-
