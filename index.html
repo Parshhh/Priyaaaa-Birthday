@@ -46,6 +46,8 @@ color:#4b0082;
 padding:15px 30px;
 border-radius:25px;
 margin:20px;
+min-width:260px;
+text-align:center;
 }
 
 button{
@@ -59,85 +61,11 @@ cursor:pointer;
 margin:10px;
 }
 
-/* Heart Balloons */
-.balloon{
-position:fixed;
-bottom:-50px;
-font-size:28px;
-animation:floatUp linear infinite;
-}
-
-@keyframes floatUp{
-0%{transform:translateY(0);}
-100%{transform:translateY(-120vh);}
-}
-
-/* Fireworks Canvas */
 #fireworksCanvas{
 position:fixed;
 top:0;left:0;
 width:100%;height:100%;
 pointer-events:none;
-}
-
-/* Heart Burst */
-.heartBurst{
-position:fixed;
-font-size:25px;
-animation:burst 1s forwards;
-}
-
-@keyframes burst{
-to{
-transform:translate(var(--x),var(--y)) scale(0.5);
-opacity:0;
-}
-}
-
-/* Popup */
-.popup{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:1000;
-}
-
-.popupBg{
-position:absolute;
-width:100%;
-height:100%;
-background-size:cover;
-background-position:center;
-filter:blur(20px) brightness(0.5);
-z-index:-1;
-}
-
-.popupContent{
-background:white;
-color:#7b2cbf;
-padding:30px;
-border-radius:20px;
-max-width:400px;
-text-align:center;
-font-family:'Great Vibes',cursive;
-font-size:22px;
-}
-
-.letter{
-position:fixed;
-bottom:20px;
-right:20px;
-font-size:35px;
-cursor:pointer;
-animation:floatLetter 2s infinite alternate;
-}
-
-@keyframes floatLetter{
-from{transform:translateY(0);}
-to{transform:translateY(-8px);}
 }
 </style>
 </head>
@@ -148,7 +76,7 @@ to{transform:translateY(-8px);}
 <div id="page1" class="page visible">
 <h1 style="font-family:'Great Vibes',cursive;font-size:55px;">Hey Turtle 🐢</h1>
 <p>Countdown to your special day 💜</p>
-<div class="timer" id="timer">Loading...</div>
+<div class="timer" id="timer">00:00:00</div>
 <button id="nextBtn" onclick="showPage2()" style="display:none;">Next ➜</button>
 </div>
 
@@ -156,7 +84,7 @@ to{transform:translateY(-8px);}
 <div id="page2" class="page hidden">
 <h1 style="font-family:'Playfair Display',serif;font-size:60px;">HAPPY BIRTHDAY BABYYYY 💜</h1>
 <h3>Will you celebrate this birthday with me? 💜</h3>
-<button onclick="yesClicked()">YES 💜</button>
+<button onclick="openPopup()">YES 💜</button>
 <button id="noBtn">NO 🙈</button>
 <button onclick="goBack()">⬅ Back</button>
 </div>
@@ -171,82 +99,94 @@ Pick-up at 12 sharp 😌
 <button onclick="goBackTo2()">⬅ Back</button>
 </div>
 
-<!-- Popup -->
-<div id="popup" class="popup hidden">
-<div id="popupBg" class="popupBg"></div>
-<div class="popupContent">
+<!-- POPUP -->
+<div id="popup" class="page hidden" style="background:rgba(0,0,0,0.6);z-index:5;">
+<div style="background:white;color:#7b2cbf;padding:30px;border-radius:20px;max-width:420px;font-family:'Great Vibes',cursive;font-size:22px;text-align:center;">
 <h2>For You 💜</h2>
-<p id="typeText"></p>
+<p>
+Meeting you has been one of the best things
+that’s happened to me.
+
+The time we’ve spent together —
+the laughs, the conversations,
+the small quiet moments —
+they all mean a lot to me.
+
+I’ve truly had a beautiful time with you.
+
+And I love you.
+</p>
 <button onclick="closePopup()">Close 💜</button>
 </div>
 </div>
 
-<div id="letterIcon" class="letter hidden" onclick="openPopup()">💌</div>
-
 <canvas id="fireworksCanvas"></canvas>
-<audio id="bgMusic" src="instrumental.mp3" loop></audio>
 
 <script>
 
-/* Heart Balloons */
-for(let i=0;i<25;i++){
-let b=document.createElement("div");
-b.className="balloon";
-b.innerHTML="💜";
-b.style.left=Math.random()*100+"vw";
-b.style.animationDuration=(6+Math.random()*6)+"s";
-document.body.appendChild(b);
-}
-
-/* Countdown */
-const birthday=new Date("March 2, 2026 18:18:00 GMT+0530").getTime();
+let unlocked=false;
 const timer=document.getElementById("timer");
 const nextBtn=document.getElementById("nextBtn");
 
+const birthday=new Date("March 2, 2026 18:23:00 GMT+0530").getTime();
+
 const interval=setInterval(()=>{
+if(unlocked) return;
+
 let now=new Date().getTime();
 let distance=birthday-now;
 
 if(distance<=0){
-clearInterval(interval);
-timer.innerHTML="00d 00h 00m 00s";
-launchFireworks();
-heartExplosion();
+unlocked=true;
+timer.innerHTML="00:00:00";
 nextBtn.style.display="inline-block";
+startFireworks();
+clearInterval(interval);
 return;
 }
 
-let d=Math.floor(distance/(1000*60*60*24));
-let h=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-let m=Math.floor((distance%(1000*60*60))/(1000*60));
-let s=Math.floor((distance%(1000*60))/1000);
+let hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+let minutes=Math.floor((distance%(1000*60*60))/(1000*60));
+let seconds=Math.floor((distance%(1000*60))/1000);
 
-timer.innerHTML=`${d}d ${h}h ${m}m ${s}s`;
+timer.innerHTML=
+String(hours).padStart(2,'0')+":"+
+String(minutes).padStart(2,'0')+":"+
+String(seconds).padStart(2,'0');
+
 },1000);
 
-/* Fireworks */
+/* FIREWORKS CONTINUOUS */
 const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-function launchFireworks(){
 let particles=[];
-for(let i=0;i<150;i++){
+
+function createFirework(){
+for(let i=0;i<80;i++){
 particles.push({
 x:canvas.width/2,
 y:canvas.height/2,
 angle:Math.random()*2*Math.PI,
-speed:Math.random()*6+2,
+speed:Math.random()*5+2,
 alpha:1
 });
 }
+}
+
+function startFireworks(){
+setInterval(createFirework,1500);
+animate();
+}
+
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 particles.forEach(p=>{
 p.x+=Math.cos(p.angle)*p.speed;
 p.y+=Math.sin(p.angle)*p.speed;
-p.alpha-=0.02;
+p.alpha-=0.01;
 ctx.globalAlpha=p.alpha;
 ctx.fillStyle="#ffffff";
 ctx.beginPath();
@@ -254,87 +194,42 @@ ctx.arc(p.x,p.y,3,0,2*Math.PI);
 ctx.fill();
 });
 particles=particles.filter(p=>p.alpha>0);
-if(particles.length>0)requestAnimationFrame(animate);
-}
-animate();
+requestAnimationFrame(animate);
 }
 
-/* Heart Explosion */
-function heartExplosion(){
-for(let i=0;i<40;i++){
-let heart=document.createElement("div");
-heart.className="heartBurst";
-heart.innerHTML="💜";
-heart.style.left="50%";
-heart.style.top="50%";
-heart.style.setProperty('--x',(Math.random()*600-300)+"px");
-heart.style.setProperty('--y',(Math.random()*600-300)+"px");
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),1000);
-}
-}
-
-/* YES Click */
-function yesClicked(){
-heartExplosion();
-openPopup();
-}
-
-/* Typewriter */
-const message="I still remember the first time we met,
-"and somehow since then,"
-"everything has felt lighter and happier."
-
-"Spending time with you —"
-"whether it’s doing something big"
-"or absolutely nothing —"
-"has been my favorite part of these months."
-
-"Thank you for being you."
-"I’ve had such a good time with you."
-
-"And I love you. 💜";"
-let i=0;
-function openPopup(){
-document.getElementById("popup").classList.remove("hidden");
-typeWriter();
-}
-function typeWriter(){
-if(i<message.length){
-document.getElementById("typeText").innerHTML+=message.charAt(i);
-i++;
-setTimeout(typeWriter,40);
-}
-}
-function closePopup(){
-document.getElementById("popup").classList.add("hidden");
-document.getElementById("page2").classList.add("hidden");
-document.getElementById("page3").classList.remove("hidden");
-document.getElementById("letterIcon").classList.remove("hidden");
-}
-
-/* Navigation */
+/* NAVIGATION */
 function showPage2(){
 document.getElementById("page1").classList.add("hidden");
 document.getElementById("page2").classList.remove("hidden");
 }
+
 function goBack(){
 document.getElementById("page2").classList.add("hidden");
 document.getElementById("page1").classList.remove("hidden");
-launchFireworks();
 }
+
 function goBackTo2(){
 document.getElementById("page3").classList.add("hidden");
 document.getElementById("page2").classList.remove("hidden");
 }
 
+function openPopup(){
+document.getElementById("popup").classList.remove("hidden");
+}
+
+function closePopup(){
+document.getElementById("popup").classList.add("hidden");
+document.getElementById("page2").classList.add("hidden");
+document.getElementById("page3").classList.remove("hidden");
+}
+
+/* NO button move */
 document.getElementById("noBtn").addEventListener("mouseover",function(){
 this.style.position="absolute";
 this.style.left=Math.random()*80+"vw";
 this.style.top=Math.random()*80+"vh";
 });
-</script>
 
+</script>
 </body>
 </html>
-
