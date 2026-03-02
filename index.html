@@ -26,7 +26,6 @@ animation:lavenderMove 14s ease infinite;
 100%{background-position:0% 50%;}
 }
 
-/* Tap overlay */
 #startOverlay{
 position:fixed;
 top:0;left:0;
@@ -41,7 +40,6 @@ z-index:9999;
 background:inherit;
 }
 
-/* Pages */
 .page{
 position:absolute;
 width:100%;
@@ -82,13 +80,11 @@ margin:10px;
 .slideshow{
 margin-top:20px;
 }
-
 .slideshow img{
 max-width:85%;
 max-height:50vh;
 border-radius:20px;
 box-shadow:0 15px 35px rgba(0,0,0,0.4);
-transition:opacity 1s ease;
 }
 
 /* Heart Balloons */
@@ -101,16 +97,13 @@ animation:floatUp linear infinite;
 pointer-events:none;
 z-index:1;
 }
-
 .glow{
 animation:glowPulse 2s infinite alternate;
 }
-
 @keyframes floatUp{
 0%{transform:translateY(0);}
 100%{transform:translateY(-120vh);}
 }
-
 @keyframes glowPulse{
 from{text-shadow:0 0 5px #fff;}
 to{text-shadow:0 0 20px #ffffff;}
@@ -162,8 +155,25 @@ z-index:5;
 
 <!-- PAGE 2 -->
 <div id="page2" class="page hidden">
-<h1 style="font-family:'Playfair Display',serif;font-size:60px;">HAPPY BIRTHDAY BABYYYY 💜</h1>
-<h3>Will you celebrate this birthday with me? 💜</h3>
+<h1 style="font-family:'Playfair Display',serif;font-size:60px;">
+HAPPY BIRTHDAY BABYYYY 💜
+</h1>
+
+<p style="max-width:600px;font-size:20px;line-height:1.6;margin-top:10px;">
+Some people walk into your life unexpectedly…  
+and suddenly everything feels lighter.
+
+If life is one long train journey,  
+I’m just really glad I found my favorite co-passenger.
+
+And unlike Aditya…  
+I’m not letting my Geet get off at the next station.
+</p>
+
+<h3 style="margin-top:25px;">
+Will you celebrate this birthday with me? 💜
+</h3>
+
 <button onclick="openPopup()">YES 💜</button>
 <button id="noBtn">NO 🙈</button>
 <button onclick="goBack()">⬅ Back</button>
@@ -228,12 +238,13 @@ document.body.appendChild(b);
 }
 
 /* COUNTDOWN */
-const birthday=new Date("March 2, 2026 20:35:30 GMT+0530").getTime();
+const birthday=new Date("March 2, 2026 00:00:00 GMT+0530").getTime();
 const timer=document.getElementById("timer");
 const nextBtn=document.getElementById("nextBtn");
 
 const interval=setInterval(()=>{
 if(unlocked) return;
+
 let now=new Date().getTime();
 let distance=birthday-now;
 
@@ -262,6 +273,7 @@ const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
+
 let particles=[];
 
 function createFirework(){
@@ -341,22 +353,18 @@ function showPage2(){
 document.getElementById("page1").className="page hidden";
 document.getElementById("page2").className="page visible";
 }
-
 function goBack(){
 document.getElementById("page2").className="page hidden";
 document.getElementById("page1").className="page visible";
 }
-
 function goBackTo2(){
 document.getElementById("page3").className="page hidden";
 document.getElementById("page2").className="page visible";
 }
-
 function openPopup(){
 document.getElementById("popup").className="page visible";
 startPopupSlideshow();
 }
-
 function closePopup(){
 stopPopupSlideshow();
 document.getElementById("popup").className="page hidden";
