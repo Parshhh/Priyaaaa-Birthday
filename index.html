@@ -53,13 +53,8 @@ align-items:center;
 text-align:center;
 }
 
-.hidden{
-display:none;
-}
-
-.visible{
-display:flex;
-}
+.hidden{display:none;}
+.visible{display:flex;}
 
 .timer{
 font-size:42px;
@@ -81,6 +76,19 @@ color:#7b2cbf;
 font-weight:bold;
 cursor:pointer;
 margin:10px;
+}
+
+/* Slideshow */
+.slideshow{
+margin-top:20px;
+}
+
+.slideshow img{
+max-width:85%;
+max-height:50vh;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.4);
+transition:opacity 1s ease;
 }
 
 /* Heart Balloons */
@@ -144,6 +152,11 @@ z-index:5;
 <h1 style="font-family:'Great Vibes',cursive;font-size:60px;">Hey Turtle 🐢</h1>
 <p style="font-size:22px;">Countdown to your special day 💜</p>
 <div class="timer" id="timer">00:00:00</div>
+
+<div class="slideshow">
+  <img id="mainSlide" src="photo1.jpg">
+</div>
+
 <button id="nextBtn" onclick="showPage2()" style="display:none;">Next ➜</button>
 </div>
 
@@ -198,7 +211,6 @@ let unlocked=false;
 /* MUSIC */
 const music=document.getElementById("bgMusic");
 music.volume=0.6;
-
 document.getElementById("startOverlay").addEventListener("click",function(){
 music.play();
 this.style.display="none";
@@ -211,22 +223,17 @@ b.className="balloon";
 b.innerHTML="💜";
 b.style.left=Math.random()*100+"vw";
 b.style.animationDuration=(8+Math.random()*6)+"s";
-
-if(Math.random()>0.7){
-b.classList.add("glow");
-}
-
+if(Math.random()>0.7){ b.classList.add("glow"); }
 document.body.appendChild(b);
 }
 
 /* COUNTDOWN */
-const birthday=new Date("March 3, 2026 00:00:00 GMT+0530").getTime();
+const birthday=new Date("March 2, 2026 20:35:30 GMT+0530").getTime();
 const timer=document.getElementById("timer");
 const nextBtn=document.getElementById("nextBtn");
 
 const interval=setInterval(()=>{
 if(unlocked) return;
-
 let now=new Date().getTime();
 let distance=birthday-now;
 
@@ -255,7 +262,6 @@ const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
-
 let particles=[];
 
 function createFirework(){
@@ -305,14 +311,20 @@ const images=[
 "photo10.JPG"
 ];
 
+/* PAGE 1 SLIDESHOW */
+let mainIndex=0;
+setInterval(()=>{
+mainIndex=(mainIndex+1)%images.length;
+document.getElementById("mainSlide").src=images[mainIndex];
+},3500);
+
+/* POPUP SLIDESHOW */
 let popupIndex=0;
 let popupInterval;
 
-/* POPUP SLIDESHOW */
 function startPopupSlideshow(){
 const bg=document.getElementById("popupBg");
 bg.style.backgroundImage="url('"+images[0]+"')";
-
 popupInterval=setInterval(()=>{
 popupIndex=(popupIndex+1)%images.length;
 bg.style.backgroundImage="url('"+images[popupIndex]+"')";
@@ -352,7 +364,6 @@ document.getElementById("page2").className="page hidden";
 document.getElementById("page3").className="page visible";
 }
 
-/* NO BUTTON MOVE */
 document.getElementById("noBtn").addEventListener("mouseover",function(){
 this.style.position="absolute";
 this.style.left=Math.random()*80+"vw";
@@ -363,5 +374,3 @@ this.style.top=Math.random()*80+"vh";
 
 </body>
 </html>
-
-
