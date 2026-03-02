@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turtle’s 24th Birthday 💜</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+margin:0;
+padding:0;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',sans-serif;
+color:white;
+
+background:linear-gradient(
+135deg,
+#9d7bff 0%,
+#b28dff 30%,
+#c8b6ff 60%,
+#a084e8 100%
+);
+
+background-size:200% 200%;
+animation:lavenderMove 14s ease infinite;
+}
+
+@keyframes lavenderMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Overlay */
+#startOverlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Great Vibes',cursive;
+font-size:42px;
+cursor:pointer;
+z-index:9999;
+background:inherit;
+}
+
+/* Pages */
+.page{
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
+transition:opacity 1s ease;
+background:transparent;
+}
+
+.hidden{opacity:0;pointer-events:none;}
+.visible{opacity:1;}
+
+.timer{
+font-size:40px;
+margin:20px;
+font-weight:bold;
+color:#4b0082;
+background:rgba(255,255,255,0.6);
+padding:12px 25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+backdrop-filter:blur(8px);
+}
+
+.glowTitle{
+font-family:'Playfair Display',serif;
+font-size:60px;
+letter-spacing:4px;
+text-transform:uppercase;
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px #fff;}
+to{text-shadow:0 0 40px #c8b6ff;}
+}
+
+.slideshow img{
+max-width:85%;
+max-height:60vh;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+margin:10px;
+background:white;
+color:#7b2cbf;
+font-weight:bold;
+}
+
+/* Blurred background page 2 */
+#bgSlideshow{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+filter:blur(18px) brightness(0.6);
+z-index:-1;
+transition:background-image 1.5s ease;
+}
+
+/* Invitation */
+.inviteCard{
+background:white;
+color:#7b2cbf;
+padding:40px;
+border-radius:20px;
+max-width:400px;
+font-family:'Great Vibes',cursive;
+font-size:24px;
+}
+
+/* Fireworks */
+#fireworksCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:9998;
+}
+</style>
+</head>
+
+<body>
+
+<div id="startOverlay">Tap to Begin 💜</div>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page visible">
+<h1 class="glowTitle">Hey Turtle 🐢</h1>
+<p>Countdown to your special day 💜</p>
+<div class="timer" id="timer"></div>
+<div class="slideshow">
+<img id="slideImage" src="photo1.jpg">
+</div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page hidden">
+<div id="bgSlideshow"></div>
+
+<h1 class="glowTitle">
+HAPPY&nbsp;&nbsp;BIRTHDAY<br>BABYYYY&nbsp;💜
+</h1>
+
+<p>Main apni favorite hoon…</p>
+<p>Par aaj se, tum meri forever favorite ho.</p>
+<p>Agar life ek train journey hai…</p>
+<p>toh main khush hoon ki meri Geet mujhe mil gayi.</p>
+
+<h3>Will you celebrate this birthday with me? 💜</h3>
+
+<button onclick="goToInvite()">YES 💜</button>
+<button id="noBtn" onmouseover="moveNo()">NO 🙈</button>
+<button onclick="goBackToPage1()">⬅ Back</button>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page hidden">
+<div class="inviteCard">
+Priya Turns 24 💜<br><br>
+You are invited to a birthday lunch date<br><br>
+Nido – Craft Kitchen & Bar<br>
+Bangalore<br><br>
+Pick-up at 12 sharp 😌<br>
+Dress pretty. Smile wide.
+</div>
+<button onclick="goBackToPage2()">⬅ Back</button>
+</div>
+
+<canvas id="fireworksCanvas"></canvas>
+<audio id="bgMusic" src="instrumental.mp3" loop></audio>
+
+<script>
+let birthdayUnlocked=false;
+
+/* MUSIC */
+const music=document.getElementById("bgMusic");
+music.volume=0.6;
+document.getElementById("startOverlay").addEventListener("click",function(){
+music.play();
+this.style.display="none";
+});
+
+/* Countdown */
+const birthday=new Date("March 3, 2026 00:00:00 GMT+0530").getTime();
+const timerInterval=setInterval(()=>{
+const now=new Date().getTime();
+const distance=birthday-now;
+
+if(distance<=0){
+clearInterval(timerInterval);
+showPage2();
+return;
+}
+
+const days=Math.floor(distance/(1000*60*60*24));
+const hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+const minutes=Math.floor((distance%(1000*60*60))/(1000*60));
+const seconds=Math.floor((distance%(1000*60))/1000);
+
+document.getElementById("timer").innerHTML=
+days+"d "+hours+"h "+minutes+"m "+seconds+"s";
+},1000);
+
+/* Slideshow Page 1 */
+const images=[
+"photo1.jpg","photo2.jpg","photo3.jpg",
+"photo4.jpg","photo5.jpg","photo6.jpg",
+"photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg"
+];
+
+let index=0;
+setInterval(()=>{
+index=(index+1)%images.length;
+document.getElementById("slideImage").src=images[index];
+},3000);
+
+/* Background slideshow Page 2 */
+let bgIndex=0;
+function startBackgroundSlideshow(){
+document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[0]+"')";
+setInterval(()=>{
+bgIndex=(bgIndex+1)%images.length;
+document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[bgIndex]+"')";
+},4000);
+}
+
+/* Page Navigation */
+function showPage2(){
+birthdayUnlocked=true;
+document.getElementById("page1").classList.replace("visible","hidden");
+document.getElementById("page2").classList.replace("hidden","visible");
+startBackgroundSlideshow();
+music.volume=0.4;
+launchFireworks();
+}
+
+function goToInvite(){
+document.getElementById("page2").classList.replace("visible","hidden");
+document.getElementById("page3").classList.replace("hidden","visible");
+music.volume=0.3;
+}
+
+function goBackToPage1(){
+document.getElementById("page2").classList.replace("visible","hidden");
+document.getElementById("page1").classList.replace("hidden","visible");
+if(birthdayUnlocked){launchFireworks();}
+}
+
+function goBackToPage2(){
+document.getElementById("page3").classList.replace("visible","hidden");
+document.getElementById("page2").classList.replace("hidden","visible");
+}
+
+function moveNo(){
+const btn=document.getElementById("noBtn");
+btn.style.position="absolute";
+btn.style.left=Math.random()*80+"vw";
+btn.style.top=Math.random()*80+"vh";
+}
+
+/* Fireworks */
+const canvas=document.getElementById("fireworksCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function launchFireworks(){
+let particles=[];
+for(let i=0;i<120;i++){
+particles.push({
+x:canvas.width/2,
+y:canvas.height/2,
+angle:Math.random()*2*Math.PI,
+speed:Math.random()*6+2,
+radius:Math.random()*3+1,
+alpha:1
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.x+=Math.cos(p.angle)*p.speed;
+p.y+=Math.sin(p.angle)*p.speed;
+p.alpha-=0.02;
+ctx.globalAlpha=p.alpha;
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+ctx.fillStyle="#ffffff";
+ctx.fill();
+});
+particles=particles.filter(p=>p.alpha>0);
+if(particles.length>0){
+requestAnimationFrame(animate);
+}else{
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+}
+animate();
+}
+</script>
+
+</body>
+</html>
