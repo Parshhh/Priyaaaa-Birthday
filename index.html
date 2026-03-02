@@ -59,7 +59,6 @@ justify-content:center;
 align-items:center;
 padding:20px;
 transition:opacity 1s ease;
-z-index:2;
 }
 
 .hidden{opacity:0;pointer-events:none;}
@@ -77,19 +76,6 @@ box-shadow:0 10px 25px rgba(0,0,0,0.2);
 backdrop-filter:blur(8px);
 }
 
-.glowTitle{
-font-family:'Playfair Display',serif;
-font-size:60px;
-letter-spacing:4px;
-text-transform:uppercase;
-animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 10px #fff;}
-to{text-shadow:0 0 40px #c8b6ff;}
-}
-
 .slideshow img{
 max-width:85%;
 max-height:60vh;
@@ -97,7 +83,39 @@ border-radius:20px;
 box-shadow:0 15px 35px rgba(0,0,0,0.4);
 }
 
-/* Buttons */
+/* Page 2 Styling */
+#bgSlideshow{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+filter:blur(18px) brightness(0.6);
+z-index:-1;
+transition:background-image 1.5s ease;
+}
+
+.birthdayTitle{
+font-family:'Playfair Display',serif;
+font-size:60px;
+letter-spacing:4px;
+text-transform:uppercase;
+margin-bottom:20px;
+animation:titleReveal 1.5s ease forwards;
+opacity:0;
+}
+
+@keyframes titleReveal{
+0%{opacity:0; transform:translateY(40px);}
+100%{opacity:1; transform:translateY(0);}
+}
+
+.quoteBlock p{
+margin:5px 0;
+}
+
 button{
 padding:10px 20px;
 border:none;
@@ -109,47 +127,6 @@ color:#7b2cbf;
 font-weight:bold;
 }
 
-/* Balloons */
-.balloon {
-position: fixed;
-bottom: -150px;
-width: 50px;
-height: 65px;
-border-radius: 50%;
-opacity: 0.85;
-animation: floatBalloon linear infinite;
-z-index:1;
-}
-
-.balloon::after {
-content: "";
-position: absolute;
-width: 2px;
-height: 50px;
-background: white;
-left: 50%;
-top: 65px;
-}
-
-@keyframes floatBalloon {
-0% { transform: translateY(0); }
-100% { transform: translateY(-120vh); }
-}
-
-/* Blurred background page 2 */
-#bgSlideshow{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background-size:cover;
-background-position:center;
-filter:blur(18px) brightness(0.6);
-z-index:0;
-transition:background-image 1.5s ease;
-}
-
 /* Invitation */
 .inviteCard{
 background:white;
@@ -159,6 +136,33 @@ border-radius:20px;
 max-width:400px;
 font-family:'Great Vibes',cursive;
 font-size:24px;
+}
+
+/* Balloons */
+.balloon{
+position:fixed;
+bottom:-150px;
+width:50px;
+height:65px;
+border-radius:50%;
+opacity:0.85;
+animation:floatBalloon linear infinite;
+z-index:0;
+}
+
+.balloon::after{
+content:"";
+position:absolute;
+width:2px;
+height:50px;
+background:white;
+left:50%;
+top:65px;
+}
+
+@keyframes floatBalloon{
+0%{transform:translateY(0);}
+100%{transform:translateY(-120vh);}
 }
 
 /* Fireworks */
@@ -180,7 +184,7 @@ z-index:5;
 
 <!-- PAGE 1 -->
 <div id="page1" class="page visible">
-<h1 class="glowTitle">Hey Turtle 🐢</h1>
+<h1 style="font-family:'Great Vibes',cursive;font-size:50px;">Hey Turtle 🐢</h1>
 <p>Countdown to your special day 💜</p>
 <div class="timer" id="timer"></div>
 <div class="slideshow">
@@ -192,19 +196,21 @@ z-index:5;
 <div id="page2" class="page hidden">
 <div id="bgSlideshow"></div>
 
-<h1 class="glowTitle">
+<h1 class="birthdayTitle">
 HAPPY&nbsp;&nbsp;BIRTHDAY<br>BABYYYY&nbsp;💜
 </h1>
 
+<div class="quoteBlock">
 <p>Main apni favorite hoon…</p>
 <p>Par aaj se, tum meri forever favorite ho.</p>
 <p>Agar life ek train journey hai…</p>
 <p>toh main khush hoon ki meri Geet mujhe mil gayi.</p>
+</div>
 
 <h3>Will you celebrate this birthday with me? 💜</h3>
 
 <button onclick="goToInvite()">YES 💜</button>
-<button id="noBtn" onmouseover="moveNo()">NO 🙈</button>
+<button id="noBtn">NO 🙈</button>
 <button onclick="goBackToPage1()">⬅ Back</button>
 </div>
 
@@ -225,7 +231,6 @@ Dress pretty. Smile wide.
 <audio id="bgMusic" src="instrumental.mp3" loop></audio>
 
 <script>
-
 let birthdayUnlocked=false;
 
 /* MUSIC */
@@ -248,7 +253,7 @@ document.body.appendChild(balloon);
 }
 
 /* Countdown */
-const birthday=new Date("March 2, 2026 17:39:00 GMT+0530").getTime();
+const birthday=new Date("March 2, 2026 17:46:00 GMT+0530").getTime();
 const timerInterval=setInterval(()=>{
 const now=new Date().getTime();
 const distance=birthday-now;
@@ -270,16 +275,9 @@ days+"d "+hours+"h "+minutes+"m "+seconds+"s";
 
 /* Slideshow Page 1 */
 const images=[
-"photo1.jpg",
-"photo2.jpg",
-"photo3.jpg",
-"photo4.JPG",
-"photo5.JPG",
-"photo6.JPG",
-"photo7.jpg",
-"photo8.jpg",
-"photo9.JPG",
-"photo10.JPG"
+"photo1.jpg","photo2.jpg","photo3.jpg",
+"photo4.jpg","photo5.jpg","photo6.jpg",
+"photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg"
 ];
 
 let index=0;
@@ -289,12 +287,15 @@ document.getElementById("slideImage").src=images[index];
 },3000);
 
 /* Background slideshow Page 2 */
-let bgIndex=0;
+let bgInterval;
 function startBackgroundSlideshow(){
-document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[0]+"')";
-setInterval(()=>{
+const bg=document.getElementById("bgSlideshow");
+let bgIndex=0;
+bg.style.backgroundImage="url('"+images[0]+"')";
+clearInterval(bgInterval);
+bgInterval=setInterval(()=>{
 bgIndex=(bgIndex+1)%images.length;
-document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[bgIndex]+"')";
+bg.style.backgroundImage="url('"+images[bgIndex]+"')";
 },4000);
 }
 
@@ -325,12 +326,11 @@ document.getElementById("page3").classList.replace("visible","hidden");
 document.getElementById("page2").classList.replace("hidden","visible");
 }
 
-function moveNo(){
-const btn=document.getElementById("noBtn");
-btn.style.position="absolute";
-btn.style.left=Math.random()*80+"vw";
-btn.style.top=Math.random()*80+"vh";
-}
+document.getElementById("noBtn").addEventListener("mouseover",function(){
+this.style.position="absolute";
+this.style.left=Math.random()*80+"vw";
+this.style.top=Math.random()*80+"vh";
+});
 
 /* Fireworks */
 const canvas=document.getElementById("fireworksCanvas");
@@ -371,6 +371,3 @@ animate();
 
 </body>
 </html>
-
-
-
