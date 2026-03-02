@@ -23,7 +23,6 @@ background:linear-gradient(
 #c8b6ff 60%,
 #a084e8 100%
 );
-
 background-size:200% 200%;
 animation:lavenderMove 14s ease infinite;
 }
@@ -60,7 +59,7 @@ justify-content:center;
 align-items:center;
 padding:20px;
 transition:opacity 1s ease;
-background:transparent;
+z-index:2;
 }
 
 .hidden{opacity:0;pointer-events:none;}
@@ -98,6 +97,7 @@ border-radius:20px;
 box-shadow:0 15px 35px rgba(0,0,0,0.4);
 }
 
+/* Buttons */
 button{
 padding:10px 20px;
 border:none;
@@ -107,6 +107,33 @@ margin:10px;
 background:white;
 color:#7b2cbf;
 font-weight:bold;
+}
+
+/* Balloons */
+.balloon {
+position: fixed;
+bottom: -150px;
+width: 50px;
+height: 65px;
+border-radius: 50%;
+opacity: 0.85;
+animation: floatBalloon linear infinite;
+z-index:1;
+}
+
+.balloon::after {
+content: "";
+position: absolute;
+width: 2px;
+height: 50px;
+background: white;
+left: 50%;
+top: 65px;
+}
+
+@keyframes floatBalloon {
+0% { transform: translateY(0); }
+100% { transform: translateY(-120vh); }
 }
 
 /* Blurred background page 2 */
@@ -119,7 +146,7 @@ height:100%;
 background-size:cover;
 background-position:center;
 filter:blur(18px) brightness(0.6);
-z-index:-1;
+z-index:0;
 transition:background-image 1.5s ease;
 }
 
@@ -142,7 +169,7 @@ left:0;
 width:100%;
 height:100%;
 pointer-events:none;
-z-index:9998;
+z-index:5;
 }
 </style>
 </head>
@@ -198,6 +225,7 @@ Dress pretty. Smile wide.
 <audio id="bgMusic" src="instrumental.mp3" loop></audio>
 
 <script>
+
 let birthdayUnlocked=false;
 
 /* MUSIC */
@@ -207,6 +235,17 @@ document.getElementById("startOverlay").addEventListener("click",function(){
 music.play();
 this.style.display="none";
 });
+
+/* BALLOONS */
+const balloonColors=["#cdb4ff","#b28dff","#9d7bff","#a084e8"];
+for(let i=0;i<20;i++){
+let balloon=document.createElement("div");
+balloon.className="balloon";
+balloon.style.left=Math.random()*100+"vw";
+balloon.style.background=balloonColors[Math.floor(Math.random()*balloonColors.length)];
+balloon.style.animationDuration=(10+Math.random()*8)+"s";
+document.body.appendChild(balloon);
+}
 
 /* Countdown */
 const birthday=new Date("March 3, 2026 00:00:00 GMT+0530").getTime();
@@ -252,7 +291,7 @@ document.getElementById("bgSlideshow").style.backgroundImage="url('"+images[bgIn
 },4000);
 }
 
-/* Page Navigation */
+/* Navigation */
 function showPage2(){
 birthdayUnlocked=true;
 document.getElementById("page1").classList.replace("visible","hidden");
@@ -304,7 +343,6 @@ radius:Math.random()*3+1,
 alpha:1
 });
 }
-
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 particles.forEach(p=>{
@@ -318,11 +356,7 @@ ctx.fillStyle="#ffffff";
 ctx.fill();
 });
 particles=particles.filter(p=>p.alpha>0);
-if(particles.length>0){
-requestAnimationFrame(animate);
-}else{
-ctx.clearRect(0,0,canvas.width,canvas.height);
-}
+if(particles.length>0){requestAnimationFrame(animate);}
 }
 animate();
 }
