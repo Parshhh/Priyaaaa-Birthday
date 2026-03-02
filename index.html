@@ -33,7 +33,6 @@ animation:lavenderMove 14s ease infinite;
 100%{background-position:0% 50%;}
 }
 
-/* Overlay */
 #startOverlay{
 position:fixed;
 top:0;left:0;
@@ -48,7 +47,6 @@ z-index:9999;
 background:inherit;
 }
 
-/* Pages */
 .page{
 position:absolute;
 width:100%;
@@ -83,7 +81,17 @@ border-radius:20px;
 box-shadow:0 15px 35px rgba(0,0,0,0.4);
 }
 
-/* Page 2 Styling */
+button{
+padding:10px 20px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+margin:10px;
+background:white;
+color:#7b2cbf;
+font-weight:bold;
+}
+
 #bgSlideshow{
 position:fixed;
 top:0;
@@ -112,22 +120,6 @@ opacity:0;
 100%{opacity:1; transform:translateY(0);}
 }
 
-.quoteBlock p{
-margin:5px 0;
-}
-
-button{
-padding:10px 20px;
-border:none;
-border-radius:25px;
-cursor:pointer;
-margin:10px;
-background:white;
-color:#7b2cbf;
-font-weight:bold;
-}
-
-/* Invitation */
 .inviteCard{
 background:white;
 color:#7b2cbf;
@@ -190,6 +182,8 @@ z-index:5;
 <div class="slideshow">
 <img id="slideImage" src="photo1.jpg">
 </div>
+
+<button id="nextBtn" onclick="showPage2()" style="display:none;">Next ➜</button>
 </div>
 
 <!-- PAGE 2 -->
@@ -200,12 +194,10 @@ z-index:5;
 HAPPY&nbsp;&nbsp;BIRTHDAY<br>BABYYYY&nbsp;💜
 </h1>
 
-<div class="quoteBlock">
 <p>Main apni favorite hoon…</p>
 <p>Par aaj se, tum meri forever favorite ho.</p>
 <p>Agar life ek train journey hai…</p>
 <p>toh main khush hoon ki meri Geet mujhe mil gayi.</p>
-</div>
 
 <h3>Will you celebrate this birthday with me? 💜</h3>
 
@@ -253,13 +245,15 @@ document.body.appendChild(balloon);
 }
 
 /* Countdown */
-const birthday=new Date("March 2, 2026 17:46:00 GMT+0530").getTime();
+const birthday=new Date("March 3, 2026 00:00:00 GMT+0530").getTime();
 const timerInterval=setInterval(()=>{
 const now=new Date().getTime();
 const distance=birthday-now;
 
 if(distance<=0){
 clearInterval(timerInterval);
+birthdayUnlocked=true;
+document.getElementById("nextBtn").style.display="inline-block";
 showPage2();
 return;
 }
@@ -273,7 +267,7 @@ document.getElementById("timer").innerHTML=
 days+"d "+hours+"h "+minutes+"m "+seconds+"s";
 },1000);
 
-/* Slideshow Page 1 */
+/* IMPORTANT: Updated with JPG */
 const images=[
 "photo1.jpg",
 "photo2.jpg",
@@ -286,13 +280,13 @@ const images=[
 "photo9.JPG",
 "photo10.JPG"
 ];
+
 let index=0;
 setInterval(()=>{
 index=(index+1)%images.length;
 document.getElementById("slideImage").src=images[index];
 },3000);
 
-/* Background slideshow Page 2 */
 let bgInterval;
 function startBackgroundSlideshow(){
 const bg=document.getElementById("bgSlideshow");
@@ -305,9 +299,7 @@ bg.style.backgroundImage="url('"+images[bgIndex]+"')";
 },4000);
 }
 
-/* Navigation */
 function showPage2(){
-birthdayUnlocked=true;
 document.getElementById("page1").classList.replace("visible","hidden");
 document.getElementById("page2").classList.replace("hidden","visible");
 startBackgroundSlideshow();
@@ -377,4 +369,3 @@ animate();
 
 </body>
 </html>
-
